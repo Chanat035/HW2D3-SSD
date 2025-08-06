@@ -1,0 +1,183 @@
+const express = require('express');
+
+const router = express.Router()
+const db = require('../config/db');
+
+const productController = require("../controllers/productController");
+
+/**
+ * @swagger
+ * tags:
+ *   name: Products
+ *   description: Product management endpoints
+ */
+
+/**
+ * @swagger
+ * /api/products:
+ *      get:
+ *          summary: Get all products
+ *          tags: [Products]
+ *          responses:
+ *              200:
+ *                  description: A list of all producst
+ *                  content:
+ *                          application/json:
+ *                              schema:
+ *                                  type: array
+ *                                  items:
+ *                                     $ref: '#/components/schemas/Product'
+ */
+
+router.get('/products', productController.getAllProducts);
+
+/**
+ * @swagger
+ * /api/products/{id}:
+ *      get:
+ *          summary: Get a product by ID
+ *          tags: [Products]
+ *          parameters:
+ *              - in: path
+ *                name: id
+ *                required: true
+ *                schema:
+ *                    type: integer
+ *                description: The ID of the product
+ *          responses:
+ *              200:
+ *                  description: The Product details
+ *                  content:
+ *                          application/json:
+ *                              schema:
+ *                                     $ref: '#/components/schemas/Product'
+ *              404:
+ *                  description: Product not found
+ */
+
+// Get product by ID
+
+router.get('/products/:id', productController.getProductByID);
+
+/**
+ * @swagger
+ * /api/products/search/{keyword}:
+ *      get:
+ *          summary: Get a product by keyword
+ *          tags: [Products]
+ *          parameters:
+ *              - in: path
+ *                name: keyword
+ *                required: true
+ *                schema:
+ *                    type: string
+ *                description: The keyword to search for
+ *          responses:
+ *              200:
+ *                  description: A list of matched products
+ */
+
+// Search product by keyword
+
+router.get('/products/search/:keyword', productController.searchProducts);
+
+/**
+ * @swagger
+ * /api/products:
+ *      post:
+ *          summary: Crate a new product
+ *          tags: [Products]
+ *          requestBody:
+ *                required: true
+ *                content:
+ *                  application/json:
+ *                      schema:
+ *                        $ref: '#/components/schemas/ProductInput'
+ *          responses:
+ *              201:
+ *                  description: Product created successfully
+ */
+
+// Create product
+
+router.post('/products', productController.createProduct);
+
+/**
+ * @swagger
+ * /api/products/{id}:
+ *      put:
+ *          summary: Update a product
+ *          tags: [Products]
+ *          parameters:
+ *              - in: path
+ *                name: id
+ *                required: true
+ *                schema:
+ *                    type: integer
+ *                description: The ID of the product
+ *          requestBody:
+ *                required: true
+ *                content:
+ *                  application/json:
+ *                      schema:
+ *                        $ref: '#/components/schemas/ProductInput'
+ *          responses:
+ *              200:
+ *                  description: Product updated successfully
+ *              404:
+ *                  description: Product not found
+ */
+
+// Update product
+
+router.put('/products/:id', productController.updateProduct);
+
+/**
+ * @swagger
+ * /api/products/{id}:
+ *      delete:
+ *          summary: Soft delete a product
+ *          tags: [Products]
+ *          parameters:
+ *              - in: path
+ *                name: id
+ *                required: true
+ *                schema:
+ *                    type: integer
+ *                description: The ID of the product to delete
+ *          responses:
+ *              200:
+ *                  description: Product soft-deleted successfully
+ *              404:
+ *                  description: Product not found
+ */
+
+// Soft delete product
+
+router.delete('/products/:id', productController.softDeleteProduct);
+
+/**
+ * @swagger
+ * /api/products/restore/{id}:
+ *      put:
+ *          summary: Restore a soft-deleted product
+ *          tags: [Products]
+ *          parameters:
+ *              - in: path
+ *                name: id
+ *                required: true
+ *                schema:
+ *                    type: integer
+ *                description: The ID of the product to restore
+ *          responses:
+ *              200:
+ *                  description: Product restored successfully
+ *              404:
+ *                  description: Product not found
+ */
+
+// Restore product
+
+router.put('/products/restore/:id', productController.restoreProduct);
+
+module.exports = router;
